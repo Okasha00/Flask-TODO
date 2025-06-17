@@ -1,5 +1,27 @@
 {% extends "base.html" %} {% block title %}My Tasks{% endblock %} {% block
 content %}
+
+<!-- ✅ Show flash if login/register successful -->
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div
+  class="p-3 mb-4 rounded {{ 'bg-green-200 text-green-800' if category == 'success' else 'bg-red-200 text-red-800' }}"
+>
+  {{ message }}
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<script>
+  setTimeout(() => {
+    const flashMessages = document.querySelectorAll(".flash-message");
+    flashMessages.forEach((el) => {
+      el.style.transition = "opacity 0.5s ease";
+      el.style.opacity = "0";
+      setTimeout(() => el.remove(), 500);
+    });
+  }, 2000);
+</script>
+
 <h2 class="text-2xl font-semibold mb-4">My Tasks</h2>
 
 <!-- Add Task Form -->
@@ -12,10 +34,15 @@ content %}
     required
   />
 
-  <select name="priority" class="w-full p-2 border rounded">
-    <option value="High">High</option>
-    <option value="Medium">Medium</option>
-    <option value="Low">Low</option>
+  <select
+    name="priority"
+    class="w-full p-2 border rounded text-gray-500"
+    required
+  >
+    <option value="" disabled selected hidden>Select Priority</option>
+    <option value="High" class="text-black">High</option>
+    <option value="Medium" class="text-black">Medium</option>
+    <option value="Low" class="text-black">Low</option>
   </select>
 
   <input
@@ -31,22 +58,22 @@ content %}
 </form>
 
 <!-- Filter Links -->
-<div class="mb-6 space-x-4 text-center text-sm font-medium">
+<div class="mb-6 flex justify-center space-x-4 text-sm font-medium">
   <a
     href="{{ url_for('index') }}"
-    class="{{ 'text-blue-600' if not filter else 'text-gray-700 hover:text-blue-600 transition' }}"
+    class="px-4 py-2 rounded {{ 'bg-blue-600 text-white' if not filter else 'bg-gray-200 text-gray-700 hover:bg-blue-100' }}"
   >
     All
   </a>
   <a
     href="{{ url_for('index', filter='active') }}"
-    class="{{ 'text-green-600' if filter == 'active' else 'text-gray-700 hover:text-green-600 transition' }}"
+    class="px-4 py-2 rounded {{ 'bg-green-600 text-white' if filter == 'active' else 'bg-gray-200 text-gray-700 hover:bg-green-100' }}"
   >
     Active
   </a>
   <a
     href="{{ url_for('index', filter='completed') }}"
-    class="{{ 'text-purple-600' if filter == 'completed' else 'text-gray-700 hover:text-purple-600 transition' }}"
+    class="px-4 py-2 rounded {{ 'bg-purple-600 text-white' if filter == 'completed' else 'bg-gray-200 text-gray-700 hover:bg-purple-100' }}"
   >
     Completed
   </a>
@@ -84,4 +111,5 @@ content %}
 <p class="mt-6">
   <a href="{{ url_for('logout') }}" class="text-red-400 underline">Logout</a>
 </p>
+
 {% endblock %}

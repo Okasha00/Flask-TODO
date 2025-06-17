@@ -4,9 +4,15 @@
   <div class="w-full max-w-sm bg-white p-6 rounded shadow">
     <h2 class="text-2xl font-semibold text-center mb-4">Login</h2>
 
-    {% if error %}
-    <p class="text-red-500 mb-4 text-center">{{ error }}</p>
-    {% endif %}
+    <!-- ✅ Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div
+      class="p-3 mb-4 rounded {{ 'bg-green-200 text-green-800' if category == 'success' else 'bg-red-200 text-red-800' }}"
+    >
+      {{ message }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
 
     <form method="POST" class="space-y-4">
       <input
