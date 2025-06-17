@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from flask import flash
 
 app = Flask(__name__)
 app.secret_key = 'secretkey123'
@@ -46,6 +47,8 @@ def login():
         user = User.query.filter_by(username=request.form['username']).first()
         if user and check_password_hash(user.password, request.form['password']):
             session['user_id'] = user.id
+            flash("Login successful!", "success")  # ✅ Alert msg
+            
             return redirect(url_for('index'))
         return render_template('login.html', error="Invalid credentials")
     return render_template('login.html')
@@ -57,6 +60,7 @@ def register():
         user = User(username=request.form['username'], password=hashed_pw)
         db.session.add(user)
         db.session.commit()
+        flash("User registered successfully!", "success")  # ✅ Alert msg
         return redirect(url_for('login'))
     return render_template('register.html')
 
