@@ -1,0 +1,87 @@
+{% extends "base.html" %} {% block title %}My Tasks{% endblock %} {% block
+content %}
+<h2 class="text-2xl font-semibold mb-4">My Tasks</h2>
+
+<!-- Add Task Form -->
+<form method="POST" action="{{ url_for('add') }}" class="space-y-4 mb-6">
+  <input
+    name="title"
+    type="text"
+    placeholder="Task title"
+    class="w-full p-2 border rounded"
+    required
+  />
+
+  <select name="priority" class="w-full p-2 border rounded">
+    <option value="High">High</option>
+    <option value="Medium">Medium</option>
+    <option value="Low">Low</option>
+  </select>
+
+  <input
+    name="tags"
+    type="text"
+    placeholder="Tags (comma separated)"
+    class="w-full p-2 border rounded"
+  />
+
+  <input name="due_date" type="date" class="w-full p-2 border rounded" />
+
+  <button class="bg-purple-500 text-white px-4 py-2 rounded">Add Task</button>
+</form>
+
+<!-- Filter Links -->
+<div class="mb-6 space-x-4 text-center text-sm font-medium">
+  <a
+    href="{{ url_for('index') }}"
+    class="{{ 'text-blue-600' if not filter else 'text-gray-700 hover:text-blue-600 transition' }}"
+  >
+    All
+  </a>
+  <a
+    href="{{ url_for('index', filter='active') }}"
+    class="{{ 'text-green-600' if filter == 'active' else 'text-gray-700 hover:text-green-600 transition' }}"
+  >
+    Active
+  </a>
+  <a
+    href="{{ url_for('index', filter='completed') }}"
+    class="{{ 'text-purple-600' if filter == 'completed' else 'text-gray-700 hover:text-purple-600 transition' }}"
+  >
+    Completed
+  </a>
+</div>
+
+<!-- Task List -->
+<ul class="space-y-2">
+  {% for task in tasks %}
+  <li
+    class="p-4 border rounded flex justify-between items-center {{ 'line-through text-gray-400' if task.completed else '' }}"
+  >
+    <div>
+      <strong>{{ task.title }}</strong>
+      <span class="ml-2 text-sm px-2 py-1 rounded bg-gray-200 dark:bg-gray-700">
+        {{ task.priority }}
+      </span>
+      {% if task.tags %}
+      <span class="text-xs ml-2">[{{ task.tags }}]</span>
+      {% endif %} {% if task.due_date %}
+      <span class="ml-2 text-sm text-blue-500">Due: {{ task.due_date }}</span>
+      {% endif %}
+    </div>
+    <div class="space-x-2">
+      <a href="{{ url_for('complete', id=task.id) }}" class="text-green-500"
+        >✓</a
+      >
+      <a href="{{ url_for('edit', id=task.id) }}" class="text-yellow-500">✏️</a>
+      <a href="{{ url_for('delete', id=task.id) }}" class="text-red-500">🗑️</a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<!-- Logout -->
+<p class="mt-6">
+  <a href="{{ url_for('logout') }}" class="text-red-400 underline">Logout</a>
+</p>
+{% endblock %}
